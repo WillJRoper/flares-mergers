@@ -184,13 +184,13 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(dist_threshes)))
 zs = []
 fracs = {}
 for i, snap in enumerate(sorted(pair_dists.keys())):
-    # Extract the redshift
-    z = float(snap.split("z")[-1].replace("p", "."))
-    zs.append(z)
-
     # Can't dp the final snapshot because it has no progenitors
     if "z005p000" in snap:
         continue
+
+    # Extract the redshift
+    z = float(snap.split("z")[-1].replace("p", "."))
+    zs.append(z)
 
     # Loop over distance thresh holds
     for d in dist_threshes:
