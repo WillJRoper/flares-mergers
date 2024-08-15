@@ -125,7 +125,8 @@ for i, (mass_low, mass_high) in enumerate(zip(mass_bins[:-1], mass_bins[1:])):
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 
-ax.legend()
+# Place legend below x axis
+ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2)
 
 # Save the figure
 savefig(fig, args.output_file + f"_{snap}")
