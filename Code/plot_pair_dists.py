@@ -58,9 +58,8 @@ with h5py.File(args.master_file, "r") as hdf:
             pairs = tree.query_pairs(dist, output_type="set")
 
             # Calculate the distances
-            dists = (
-                np.array([np.linalg.norm(pos[i] - pos[j]) for i, j in pairs])
-                * 1000
+            dists = np.array(
+                [np.linalg.norm(pos[i] - pos[j]) for i, j in pairs]
             )
 
             # Store the distances
@@ -94,14 +93,14 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 
-# # Create the colorbar for the redshifts
-# cbar = fig.colorbar(
-#     plt.cm.ScalarMappable(cmap="viridis"),
-#     ax,
-# )
-# cbar.set_label("$z$")
-# cbar.set_ticks(np.linspace(0, 1, len(zs)))
-# cbar.set_ticklabels(zs)
+# Create the colorbar for the redshifts
+cbar = fig.colorbar(
+    plt.cm.ScalarMappable(cmap="viridis"),
+    ax,
+)
+cbar.set_label("$z$")
+cbar.set_ticks(np.linspace(0, 1, len(zs)))
+cbar.set_ticklabels(zs)
 
 # Save the figure
 savefig(fig, args.output_file)
