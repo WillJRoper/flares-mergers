@@ -97,7 +97,7 @@ ax.set_ylabel("$N$")
 # Create the colorbar for the redshifts
 cbar = fig.colorbar(
     plt.cm.ScalarMappable(cmap="viridis"),
-    orientation="vertical",
+    ax,
 )
 cbar.set_label("$z$")
 cbar.set_ticks(np.linspace(0, 1, len(zs)))
