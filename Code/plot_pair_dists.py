@@ -167,7 +167,7 @@ gs = fig.add_gridspec(
     3,
     hspace=0.0,
     wspace=0.5,
-    width_ratios=[10, 10, 1],
+    width_ratios=[20, 20, 1],
 )
 ax = fig.add_subplot(gs[0:2, 0])
 ax1 = fig.add_subplot(gs[2:, 0])
@@ -185,6 +185,9 @@ ax.set_yscale("log")
 ax1.set_yscale("log")
 ax2.set_xscale("log")
 ax2.set_yscale("log")
+
+# Remove the xticks from the upper plot
+ax.set_xticklabels([])
 
 # Create a colormap for each redshift
 zs = np.arange(5, 16, 1)
