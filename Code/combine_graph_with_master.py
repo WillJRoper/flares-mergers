@@ -158,9 +158,12 @@ with h5py.File(new_file, "r+") as hdf_master:
                     prog_start_index, nprog = mergergraph_lookup[(grp, subgrp)]
 
                     # Get the progenitor masses
-                    prog_masses = hdf_mergergraph["prog_stellar_masses"][
-                        prog_start_index : prog_start_index + nprog
-                    ]
+                    try:
+                        prog_masses = hdf_mergergraph["prog_stellar_masses"][
+                            prog_start_index : prog_start_index + nprog
+                        ]
+                    except KeyError:
+                        continue
 
                     # Perform a stellar mass cut
                     prog_masses = prog_masses[prog_masses > 1e8 / 10**10]
