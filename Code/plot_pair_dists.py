@@ -94,14 +94,14 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 
-# Create the colorbar for the redshifts
-cbar = fig.colorbar(
-    plt.cm.ScalarMappable(cmap="viridis"),
-    ax,
-)
-cbar.set_label("$z$")
-cbar.set_ticks(np.linspace(0, 1, len(zs)))
-cbar.set_ticklabels(zs)
+# # Create the colorbar for the redshifts
+# cbar = fig.colorbar(
+#     plt.cm.ScalarMappable(cmap="viridis"),
+#     ax,
+# )
+# cbar.set_label("$z$")
+# cbar.set_ticks(np.linspace(0, 1, len(zs)))
+# cbar.set_ticklabels(zs)
 
 # Save the figure
 savefig(fig, args.output_file)
