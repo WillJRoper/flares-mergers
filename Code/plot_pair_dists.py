@@ -26,7 +26,10 @@ parser.add_argument(
     default="pair_dists",
 )
 parser.add_argument(
-    "--dist", type=float, help="The maximum pair distance in pkpc.", default=50
+    "--dist",
+    type=float,
+    help="The maximum pair distance in pkpc.",
+    default=100,
 )
 
 args = parser.parse_args()
@@ -94,14 +97,15 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 
-# # Create the colorbar for the redshifts
-# cbar = fig.colorbar(
-#     plt.cm.ScalarMappable(cmap="viridis"),
-#     ax,
-# )
-# cbar.set_label("$z$")
-# cbar.set_ticks(np.linspace(0, 1, len(zs)))
-# cbar.set_ticklabels(zs)
+# Create the colorbar for the redshifts
+cbar = fig.colorbar(
+    plt.cm.ScalarMappable(cmap="viridis"),
+    ax=ax,
+    ticks=np.linspace(0, 1, len(zs)),
+)
+cbar.ax.set_yticklabels([f"{z:.0f}" for z in zs])
+cbar.set_label("$z$")
+cbar.ax.invert_yaxis()
 
 # Save the figure
 savefig(fig, args.output_file)
