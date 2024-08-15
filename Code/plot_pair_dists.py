@@ -55,7 +55,8 @@ with h5py.File(args.master_file, "r") as hdf:
             tree = cKDTree(pos)
 
             # Query the tree
-            dists, _ = tree.query_pairs(dist, output_type="ndarray")
+            dists = tree.query_pairs(dist, output_type="ndarray")
+            print(dists)
 
             # Store the distances
             pair_dists[snap].extend(dists)
