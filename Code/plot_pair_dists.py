@@ -191,6 +191,10 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
         color=colors[i],
     )
 
+    # Skip missing snaps
+    if snap not in prog_pair_dists:
+        continue
+
     # Plot the histogram for the progenitors
     ax1.hist(
         prog_pair_dists[snap],
