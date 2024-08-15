@@ -166,7 +166,7 @@ gs = fig.add_gridspec(
     4,
     3,
     hspace=0.0,
-    width=0.1,
+    wspace=0.1,
     height_ratios=[1, 1],
     width_ratios=[10, 10, 1],
 )
