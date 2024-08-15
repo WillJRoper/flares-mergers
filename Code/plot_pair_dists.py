@@ -50,15 +50,17 @@ with h5py.File(args.master_file, "r") as hdf:
 
             # Get the positions and convert to physical units
             pos = to_physical(gal_grp["COP"][:].T, z)
-            print(pos)
-            print(dist)
 
             # Create a KDTree
             tree = cKDTree(pos)
 
             # Query the tree
-            dists = tree.query_pairs(dist, output_type="ndarray")
-            print(dists)
+            pairs = tree.query_pairs(dist, output_type="set")
+
+            # Calculate the distances
+            dists = np.array(
+                [np.linalg.norm(pos[i] - pos[j]) for i, j in pairs]
+            )
 
             # Store the distances
             pair_dists[snap].extend(dists)
