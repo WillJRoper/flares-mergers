@@ -239,6 +239,9 @@ ax1.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 ax1.set_ylabel("$N$")
 
+# Set y lims to match
+ax1.set_ylim(ax.get_ylim())
+
 # Create the colorbar for the redshifts
 cbar = fig.colorbar(
     plt.cm.ScalarMappable(cmap="viridis"),
