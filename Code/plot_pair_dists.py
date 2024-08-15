@@ -167,7 +167,6 @@ gs = fig.add_gridspec(
     3,
     hspace=0.0,
     wspace=0.1,
-    height_ratios=[1, 1],
     width_ratios=[10, 10, 1],
 )
 ax = fig.add_subplot(gs[0:2, 0])
