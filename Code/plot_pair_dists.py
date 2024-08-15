@@ -136,6 +136,9 @@ with h5py.File(args.master_file, "r") as hdf:
                 mask = prog_mass > 10**8
                 prog_pos = prog_pos[mask]
 
+                if len(prog_mass[mask]) < 2:
+                    continue
+
                 # Create a KDTree
                 tree = cKDTree(prog_pos)
 
@@ -158,9 +161,13 @@ with h5py.File(args.master_file, "r") as hdf:
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
-fig, ax = plt.subplots(figsize=(3.5, 3.5))
+fig, ax = plt.subplots(figsize=(3.5 * 1.1, 2 * 3.5))
 gs = fig.add_gridspec(
-    2, 2, hspace=0.0, height_ratios=[1, 1], width_ratios=[10, 1]
+    2,
+    2,
+    hspace=0.0,
+    height_ratios=[1, 1],
+    width_ratios=[10, 1],
 )
 ax = fig.add_subplot(gs[0, 0])
 ax1 = fig.add_subplot(gs[1, 0])
@@ -194,6 +201,8 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
     # Skip missing snaps
     if snap not in prog_pair_dists:
         continue
+
+    print(prog_pair_dists[snap])
 
     # Plot the histogram for the progenitors
     ax1.hist(
