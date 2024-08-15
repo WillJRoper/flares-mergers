@@ -38,7 +38,7 @@ dist = (args.dist * kpc).to(Mpc).value
 pair_dists = {}
 with h5py.File(args.master_file, "r") as hdf:
     for reg in tqdm(hdf.keys(), desc="Regions"):
-        for snap in tqdm(hdf[reg].keys(), desc="Snapshots", leave=False):
+        for snap in hdf[reg].keys():
             # Create an entry for the snapshot
             pair_dists.setdefault(snap, [])
 
@@ -69,7 +69,7 @@ with h5py.File(args.master_file, "r") as hdf:
 fig, ax = plt.subplots(figsize=(3.5, 3.5))
 ax.loglog()
 ax.grid(True)
-ax.setaxisbelow(True)
+ax.set_axisbelow(True)
 
 # Create a colormap for each redshift
 zs = np.arange(5, 16, 1)
