@@ -96,7 +96,7 @@ def unpack_progenitors(filepath):
 
                 # Get the data
                 starts = merger_group["Prog_Start_Index"]
-                nprogs = merger_group["NProgs"]
+                nprogs = merger_group["nProgs"]
 
                 # Shift the start indexes
                 starts = starts + np.sum(nprogenitors[snap])
