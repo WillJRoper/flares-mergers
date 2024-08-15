@@ -31,6 +31,12 @@ parser.add_argument(
     help="The maximum pair distance in pkpc.",
     default=100,
 )
+parser.add_argument(
+    "--nbins",
+    type=int,
+    help="The number of bins.",
+    default=30,
+)
 
 args = parser.parse_args()
 
@@ -82,7 +88,7 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(zs)))
 # Create the bins from the minimum distance (across all snapshots) to
 # the maixmum dist
 min_dist = min([min(pair_dists[snap]) for snap in pair_dists])
-bins = np.logspace(np.log10(min_dist), np.log10(dist * 1000), 50)
+bins = np.logspace(np.log10(min_dist), np.log10(dist * 1000), args.nbins)
 
 # Loop over the snapshots
 for i, snap in enumerate(sorted(pair_dists.keys())):
