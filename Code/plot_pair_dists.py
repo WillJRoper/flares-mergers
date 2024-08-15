@@ -58,8 +58,9 @@ with h5py.File(args.master_file, "r") as hdf:
             pairs = tree.query_pairs(dist, output_type="set")
 
             # Calculate the distances
-            dists = np.array(
-                [np.linalg.norm(pos[i] - pos[j]) for i, j in pairs] * 1000
+            dists = (
+                np.array([np.linalg.norm(pos[i] - pos[j]) for i, j in pairs])
+                * 1000
             )
 
             # Store the distances
