@@ -74,9 +74,7 @@ mega_path = "/cosma7/data/dp004/FLARES/FLARES-1/MergerGraphs/"
 copy_hdf5_excluding_group(
     master_file,
     new_file,
-    [
-        "Particle",
-    ],
+    ["Particle", "BPASS"],
 )
 
 # Define the regions
