@@ -79,7 +79,7 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(zs)))
 # Create the bins from the minimum distance (across all snapshots) to
 # the maixmum dist
 min_dist = min([min(pair_dists[snap]) for snap in pair_dists])
-bins = np.logspace(log10(min_dist), np.log10(dist), 50)
+bins = np.logspace(np.log10(min_dist), np.log10(dist), 50)
 
 # Loop over the snapshots
 for i, snap in enumerate(sorted(pair_dists.keys())):
