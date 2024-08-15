@@ -58,8 +58,9 @@ with h5py.File(args.master_file, "r") as hdf:
             pairs = tree.query_pairs(dist, output_type="set")
 
             # Calculate the distances
-            dists = np.array(
-                [np.linalg.norm(pos[i] - pos[j]) for i, j in pairs]
+            dists = (
+                np.array([np.linalg.norm(pos[i] - pos[j]) for i, j in pairs])
+                * 1000
             )
 
             # Store the distances
@@ -75,21 +76,30 @@ ax.set_axisbelow(True)
 zs = np.arange(5, 16, 1)
 colors = plt.cm.viridis(np.linspace(0, 1, len(zs)))
 
+# Create the bins from the minimum distance (across all snapshots) to
+# the maixmum dist
+min_dist = min([min(pair_dists[snap]) for snap in pair_dists])
+bins = np.logspace(log10(min_dist), np.log10(dist), 50)
+
 # Loop over the snapshots
 for i, snap in enumerate(sorted(pair_dists.keys())):
     # Plot the histogram
     ax.hist(
         pair_dists[snap],
-        bins=np.linspace(0, dist, 50),
+        bins=bins,
         histtype="step",
         color=colors[i],
     )
 
-ax.set_xlabel("$R_{i,j} / $ [Mpc]")
+ax.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 
-# Create the colorbar
-cbar = fig.colorbar(plt.cm.ScalarMappable(cmap="viridis"), ax=ax)
+# Create the colorbar for the redshifts
+cbar = fig.colorbar(
+    plt.cm.ScalarMappable(cmap="viridis"),
+    ax,
+    orientation="vertical",
+)
 cbar.set_label("$z$")
 cbar.set_ticks(np.linspace(0, 1, len(zs)))
 cbar.set_ticklabels(zs)
