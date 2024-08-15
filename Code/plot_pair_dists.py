@@ -50,6 +50,8 @@ with h5py.File(args.master_file, "r") as hdf:
 
             # Get the positions and convert to physical units
             pos = to_physical(gal_grp["COP"][:], z)
+            print(pos)
+            print(dist)
 
             # Create a KDTree
             tree = cKDTree(pos)
