@@ -2,7 +2,7 @@
 import os
 import matplotlib.pyplot as plt
 import h5py
-import numpy as np
+from tqdm import tqdm
 
 # Define the snapshots list
 SNAPSHOTS = [
@@ -78,11 +78,14 @@ def unpack_progenitors(filepath):
 
     # Open the file
     with h5py.File(filepath, "r") as hdf:
-        for reg in hdf.keys():
+        for reg in tqdm(hdf.keys()):
+            # Make entries for this region
+            start_indexes.setdefault(reg, {})
+            nprogenitors.setdefault(reg, {})
             for snap in hdf[reg].keys():
                 # Make entries for this snapshot
-                start_indexes.setdefault(snap, [])
-                nprogenitors.setdefault(snap, [])
+                start_indexes[reg].setdefault(snap, [])
+                nprogenitors[reg].setdefault(snap, [])
 
                 # Get galaxy group
                 gal_group = hdf[reg][snap]["Galaxy"]
@@ -98,11 +101,8 @@ def unpack_progenitors(filepath):
                 starts = merger_group["Prog_Start_Index"]
                 nprogs = merger_group["nProgs"]
 
-                # Shift the start indexes
-                starts = starts + np.sum(nprogenitors[snap])
-
                 # Store the data
-                start_indexes[snap].extend(starts)
-                nprogenitors[snap].extend(nprogs)
+                start_indexes[reg][snap].extend(starts)
+                nprogenitors[reg][snap].extend(nprogs)
 
     return start_indexes, nprogenitors

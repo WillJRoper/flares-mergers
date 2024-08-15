@@ -88,7 +88,7 @@ with h5py.File(args.master_file, "r") as hdf:
 # Loop over regions and snapshots calculating the distances between progenitors
 prog_pair_dists = {}
 with h5py.File(args.master_file, "r") as hdf:
-    for reg in tqdm(hdf.keys(), desc="Regions"):
+    for reg in hdf.keys():
         for snap in hdf[reg].keys():
             # Can't do the first snapshot since there are no progenitors
             if snap not in PROG_SNAPS:
@@ -98,8 +98,8 @@ with h5py.File(args.master_file, "r") as hdf:
             prog_snap = PROG_SNAPS[snap]
 
             # Get this snapshots progenitor data
-            this_start_inds = np.array(start_inds[snap], dtype=int)
-            this_nprogs = np.array(nprogs[snap], dtype=int)
+            this_start_inds = np.array(start_inds[reg][snap], dtype=int)
+            this_nprogs = np.array(nprogs[reg][snap], dtype=int)
 
             # Create an entry for the snapshot
             prog_pair_dists.setdefault(prog_snap, [])
@@ -118,7 +118,10 @@ with h5py.File(args.master_file, "r") as hdf:
 
             # Get the distances for the progenitors
             dists = []
-            for i in range(len(this_start_inds)):
+            for i in tqdm(
+                range(len(this_start_inds)),
+                desc=f"Progenitors for {reg}:{snap}",
+            ):
                 inds = list(
                     range(
                         this_start_inds[i], this_start_inds[i] + this_nprogs[i]
