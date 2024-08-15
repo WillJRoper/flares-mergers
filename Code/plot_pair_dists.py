@@ -163,15 +163,17 @@ with h5py.File(args.master_file, "r") as hdf:
 # Plot the histogram for each snapshot in two panels (one above the other)
 fig = plt.figure(figsize=(3.5 * 1.1, 2 * 3.5))
 gs = fig.add_gridspec(
-    2,
-    2,
+    4,
+    3,
     hspace=0.0,
+    width=0.1,
     height_ratios=[1, 1],
-    width_ratios=[10, 1],
+    width_ratios=[10, 10, 1],
 )
-ax = fig.add_subplot(gs[0, 0])
-ax1 = fig.add_subplot(gs[1, 0])
-cax = fig.add_subplot(gs[:, 1])
+ax = fig.add_subplot(gs[0:2, 0])
+ax1 = fig.add_subplot(gs[2:, 0])
+ax2 = fig.add_subplot(gs[1:3, 1])
+cax = fig.add_subplot(gs[1:3, 2])
 ax.grid(True)
 ax1.grid(True)
 ax.set_axisbelow(True)
@@ -189,11 +191,12 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(zs)))
 # the maixmum dist
 min_dist = min([min(pair_dists[snap]) for snap in pair_dists])
 bins = np.logspace(np.log10(min_dist), np.log10(dist * 1000), args.nbins)
+bin_cents = (bins[1:] + bins[:-1]) / 2
 
 # Loop over the snapshots
 for i, snap in enumerate(sorted(pair_dists.keys())):
     # Plot the histogram
-    ax.hist(
+    n, _, _ = ax.hist(
         pair_dists[snap],
         bins=bins,
         histtype="step",
@@ -205,11 +208,19 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
         continue
 
     # Plot the histogram for the progenitors
-    ax1.hist(
+    prog_n, _, _ = ax1.hist(
         prog_pair_dists[snap],
         bins=bins,
         histtype="step",
         color=colors[i],
+    )
+
+    # Plot the ratio
+    ax2.plot(
+        bin_cents,
+        prog_n / n,
+        color=colors[i],
+        label=f"$z = {snap.split('z')[-1].replace('p', '.')} $",
     )
 
 # Put a text box in the top left corner
@@ -233,8 +244,10 @@ ax1.text(
 )
 
 ax1.set_xlabel("$R_{i,j} / $ [pkpc]")
+ax2.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 ax1.set_ylabel("$N$")
+ax2.set_ylabel("Mergers / All Galaxies")
 
 # Create the colorbar for the redshifts
 cbar = fig.colorbar(
