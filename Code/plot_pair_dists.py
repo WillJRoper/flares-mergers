@@ -80,7 +80,7 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
     # Plot the histogram
     ax.hist(
         pair_dists[snap],
-        bins=np.logspace(0, np.log10(dist), 50),
+        bins=np.linspace(0, dist, 50),
         histtype="step",
         color=colors[i],
     )
