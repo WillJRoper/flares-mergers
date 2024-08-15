@@ -23,7 +23,7 @@ parser.add_argument(
     "--output_file",
     type=str,
     help="The path to the output file.",
-    default="pair_dists",
+    default="fraction_merged_at_dist",
 )
 parser.add_argument(
     "--dist",
