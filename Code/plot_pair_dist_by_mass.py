@@ -119,7 +119,7 @@ for i, (mass_low, mass_high) in enumerate(zip(mass_bins[:-1], mass_bins[1:])):
         r"\log_{10}(M_{{\star}/M_\odot} "
         f"< {np.log10(mass_high):.0f}$"
         if mass_high < np.inf
-        else r"\log_{10}(M_{{\star}/M_\odot} " f"> {np.log10(mass_low):.0f}$",
+        else r"$\log_{10}(M_{{\star}/M_\odot} " f"> {np.log10(mass_low):.0f}$",
     )
 
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
