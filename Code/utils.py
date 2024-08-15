@@ -87,6 +87,10 @@ def unpack_progenitors(filepath):
                 # Get galaxy group
                 gal_group = hdf[reg][snap]["Galaxy"]
 
+                # Skip if there are no mergers
+                if "MergerGraph" not in gal_group:
+                    continue
+
                 # Get mergergraph group
                 merger_group = gal_group["MergerGraph"]
 
