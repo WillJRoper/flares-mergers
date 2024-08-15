@@ -58,7 +58,7 @@ with h5py.File(args.master_file, "r") as hdf:
             gal_grp = hdf[f"{reg}/{snap}/Galaxy"]
 
             # Get the positions and convert to physical units
-            pos = gal_grp["COP"][:].T
+            pos = to_physical(gal_grp["COP"][:].T, z)
 
             # Create a KDTree
             tree = cKDTree(pos)
@@ -98,6 +98,7 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
         bins=bins,
         histtype="step",
         color=colors[i],
+        label=snap,
     )
 
 ax.set_xlabel("$R_{i,j} / $ [pkpc]")
@@ -113,5 +114,7 @@ cbar.ax.set_yticklabels([f"{z:.0f}" for z in zs])
 cbar.set_label("$z$")
 cbar.ax.invert_yaxis()
 
+# Place legend below
+ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=3)
 # Save the figure
 savefig(fig, args.output_file)
