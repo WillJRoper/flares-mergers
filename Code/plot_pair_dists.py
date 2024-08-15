@@ -156,8 +156,8 @@ with h5py.File(args.master_file, "r") as hdf:
                     * 1000
                 )
 
-            # Store the distances
-            prog_pair_dists[prog_snap].extend(prog_dists)
+                # Store the distances
+                prog_pair_dists[prog_snap].extend(prog_dists)
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
