@@ -161,7 +161,7 @@ with h5py.File(args.master_file, "r") as hdf:
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
-fig, ax = plt.subplots(figsize=(3.5 * 1.1, 2 * 3.5))
+fig = plt.figure(figsize=(3.5 * 1.1, 2 * 3.5))
 gs = fig.add_gridspec(
     2,
     2,
@@ -172,12 +172,14 @@ gs = fig.add_gridspec(
 ax = fig.add_subplot(gs[0, 0])
 ax1 = fig.add_subplot(gs[1, 0])
 cax = fig.add_subplot(gs[:, 1])
-ax.loglog()
-ax1.loglog()
 ax.grid(True)
 ax1.grid(True)
 ax.set_axisbelow(True)
 ax1.set_axisbelow(True)
+ax.set_xscale("log")
+ax1.set_xscale("log")
+ax.set_yscale("log")
+ax1.set_yscale("log")
 
 # Create a colormap for each redshift
 zs = np.arange(5, 16, 1)
@@ -201,8 +203,6 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
     # Skip missing snaps
     if snap not in prog_pair_dists:
         continue
-
-    print(prog_pair_dists[snap])
 
     # Plot the histogram for the progenitors
     ax1.hist(
