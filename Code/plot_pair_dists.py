@@ -110,7 +110,7 @@ cbar = fig.colorbar(
     ax=ax,
     ticks=np.linspace(0, 1, len(zs)),
 )
-cbar.ax.set_yticklabels([f"{z:.0f}" for z in zs])
+cbar.ax.set_yticklabels(reverse([f"{z:.0f}" for z in zs]))
 cbar.set_label("$z$")
 cbar.ax.invert_yaxis()
 
