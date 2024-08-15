@@ -49,7 +49,7 @@ with h5py.File(args.master_file, "r") as hdf:
             gal_grp = hdf[f"{reg}/{snap}/Galaxy"]
 
             # Get the positions and convert to physical units
-            pos = to_physical(gal_grp["COP"][:], z)
+            pos = to_physical(gal_grp["COP"][:].T, z)
             print(pos)
             print(dist)
 
