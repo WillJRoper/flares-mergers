@@ -76,7 +76,6 @@ copy_hdf5_excluding_group(
     new_file,
     [
         "Particle",
-        "011_z004p770",
     ],
 )
 
@@ -97,6 +96,7 @@ flares_snaps = [
     "008_z007p000",
     "009_z006p000",
     "010_z005p000",
+    "011_z004p770",
 ]
 
 
