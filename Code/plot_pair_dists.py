@@ -161,30 +161,24 @@ with h5py.File(args.master_file, "r") as hdf:
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
-fig = plt.figure(figsize=(3.5 * 2.1, 2 * 3.5))
+fig = plt.figure(figsize=(3.5 * 1.1, 2 * 3.5))
 gs = fig.add_gridspec(
     4,
-    3,
+    2,
     hspace=0.0,
-    wspace=0.5,
-    width_ratios=[20, 20, 1],
+    width_ratios=[20, 1],
 )
 ax = fig.add_subplot(gs[0:2, 0])
 ax1 = fig.add_subplot(gs[2:, 0])
-ax2 = fig.add_subplot(gs[1:3, 1])
-cax = fig.add_subplot(gs[1:3, 2])
+cax = fig.add_subplot(gs[1:3, 1])
 ax.grid(True)
 ax1.grid(True)
-ax2.grid(True)
 ax.set_axisbelow(True)
 ax1.set_axisbelow(True)
-ax2.set_axisbelow(True)
 ax.set_xscale("log")
 ax1.set_xscale("log")
 ax.set_yscale("log")
 ax1.set_yscale("log")
-ax2.set_xscale("log")
-ax2.set_yscale("log")
 
 # Remove the xticks from the upper plot
 ax.set_xticklabels([])
@@ -221,14 +215,6 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
         color=colors[i],
     )
 
-    # Plot the ratio
-    ax2.plot(
-        bin_cents,
-        prog_n / n,
-        color=colors[i],
-        label=f"$z = {snap.split('z')[-1].replace('p', '.')} $",
-    )
-
 # Put a text box in the top left corner
 ax.text(
     0.05,
@@ -250,10 +236,8 @@ ax1.text(
 )
 
 ax1.set_xlabel("$R_{i,j} / $ [pkpc]")
-ax2.set_xlabel("$R_{i,j} / $ [pkpc]")
 ax.set_ylabel("$N$")
 ax1.set_ylabel("$N$")
-ax2.set_ylabel("Mergers / All Galaxies")
 
 # Create the colorbar for the redshifts
 cbar = fig.colorbar(
