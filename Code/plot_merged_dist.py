@@ -171,11 +171,9 @@ ax = fig.add_subplot(gs[0, 0])
 cax = fig.add_subplot(gs[0, 1])
 ax.grid(True)
 ax.set_axisbelow(True)
-ax.set_xscale("log")
-ax.set_yscale("log")
 
 # Define distance thresholds
-dist_threshes = np.logspace(0, 2, 8)
+dist_threshes = [1, 5, 10, 50, 100]
 
 # Define the colors
 colors = plt.cm.viridis(np.linspace(0, 1, len(dist_threshes)))
@@ -208,6 +206,15 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
         # Store the fraction
         fracs.setdefault(d, []).append(n_prog / n)
 
+# Convert to arrays
+zs = np.array(zs)
+for d in dist_threshes:
+    fracs[d] = np.array(fracs[d])
+
+# Swap zeros for nans
+for d in dist_threshes:
+    fracs[d][fracs[d] == 0] = np.nan
+
 # Plot each distance
 for i, d in enumerate(dist_threshes):
     ax.plot(
@@ -225,8 +232,8 @@ cbar = fig.colorbar(
     cax=cax,
 )
 cbar.set_ticks(np.linspace(0, 1, len(dist_threshes)))
-cbar.set_ticklabels([f"{d:.1f} pkpc" for d in dist_threshes])
-cbar.set_label("$R_{i,j} < d$")
+cbar.set_ticklabels([f"{d:.1f}" for d in dist_threshes])
+cbar.set_label("$R_{i,j} < d / [pkpc]$")
 
 # Save the figure
 savefig(fig, args.output_file)
