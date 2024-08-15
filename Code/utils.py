@@ -20,7 +20,7 @@ def savefig(fig, outname):
 
     # Save the figure
     fig.savefig(
-        f"plots/{outname}.png",
+        f"../plots/{outname}.png",
         dpi=300,
         bbox_inches="tight",
     )
