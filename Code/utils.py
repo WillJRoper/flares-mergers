@@ -88,7 +88,7 @@ def unpack_progenitors(filepath):
                 gal_group = hdf[reg][snap]["Galaxy"]
 
                 # Get mergergraph group
-                merger_group = gal_group[reg][snap]["MergerGraph"]
+                merger_group = gal_group["MergerGraph"]
 
                 # Get the data
                 starts = merger_group["Prog_Start_Index"]
