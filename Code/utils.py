@@ -16,7 +16,7 @@ def savefig(fig, outname):
 
     # Create the directory if it doesn't exist
     if dirname:
-        os.makedirs("plots/" + dirname, exist_ok=True)
+        os.makedirs("../plots/" + dirname, exist_ok=True)
 
     # Save the figure
     fig.savefig(
