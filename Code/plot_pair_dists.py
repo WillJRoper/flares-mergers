@@ -161,12 +161,12 @@ with h5py.File(args.master_file, "r") as hdf:
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
-fig = plt.figure(figsize=(3.5 * 1.1, 2 * 3.5))
+fig = plt.figure(figsize=(3.5 * 2.1, 2 * 3.5))
 gs = fig.add_gridspec(
     4,
     3,
     hspace=0.0,
-    wspace=0.1,
+    wspace=0.5,
     width_ratios=[10, 10, 1],
 )
 ax = fig.add_subplot(gs[0:2, 0])
@@ -175,12 +175,16 @@ ax2 = fig.add_subplot(gs[1:3, 1])
 cax = fig.add_subplot(gs[1:3, 2])
 ax.grid(True)
 ax1.grid(True)
+ax2.grid(True)
 ax.set_axisbelow(True)
 ax1.set_axisbelow(True)
+ax2.set_axisbelow(True)
 ax.set_xscale("log")
 ax1.set_xscale("log")
 ax.set_yscale("log")
 ax1.set_yscale("log")
+ax2.set_xscale("log")
+ax2.set_yscale("log")
 
 # Create a colormap for each redshift
 zs = np.arange(5, 16, 1)
