@@ -50,15 +50,18 @@ start_inds, nprogs = unpack_progenitors(args.master_file)
 pair_dists = {}
 with h5py.File(args.master_file, "r") as hdf:
     for reg in tqdm(hdf.keys(), desc="Regions"):
-        for snap in hdf[reg].keys():
+        for snap in PROG_SNAPS:
+            # Get the prog snap
+            prog_snap = PROG_SNAPS[snap]
+
             # Create an entry for the snapshot
-            pair_dists.setdefault(snap, [])
+            pair_dists.setdefault(prog_snap, [])
 
             # Extract the redshift
             z = float(snap.split("z")[-1].replace("p", "."))
 
             # Get the galaxy group
-            gal_grp = hdf[f"{reg}/{snap}/Galaxy"]
+            gal_grp = hdf[f"{reg}/{prog_snap}/Galaxy"]
 
             # Get the positions and convert to physical units
             pos = to_physical(gal_grp["COP"][:].T, z)
@@ -83,17 +86,13 @@ with h5py.File(args.master_file, "r") as hdf:
             )
 
             # Store the distances
-            pair_dists[snap].extend(dists)
+            pair_dists[prog_snap].extend(dists)
 
 # Loop over regions and snapshots calculating the distances between progenitors
 prog_pair_dists = {}
 with h5py.File(args.master_file, "r") as hdf:
     for reg in hdf.keys():
-        for snap in hdf[reg].keys():
-            # Can't do the first snapshot since there are no progenitors
-            if snap not in PROG_SNAPS:
-                continue
-
+        for snap in PROG_SNAPS:
             # Get the prog snap
             prog_snap = PROG_SNAPS[snap]
 
@@ -182,10 +181,6 @@ colors = plt.cm.viridis(np.linspace(0, 1, len(dist_threshes)))
 zs = []
 fracs = {}
 for i, snap in enumerate(sorted(pair_dists.keys())):
-    # Can't dp the final snapshot because it has no progenitors
-    if "z005p000" in snap:
-        continue
-
     # Extract the redshift
     z = float(snap.split("z")[-1].replace("p", "."))
     zs.append(z)
@@ -224,7 +219,7 @@ for i, d in enumerate(dist_threshes):
     )
 
 ax.set_xlabel("$z$")
-ax.set_ylabel("$N$")
+ax.set_ylabel("$N_{\mathrm{merg}}(< d) / N_{\mathrm{all}}(< d)$")
 
 # Create the colorbar for the distance thresholds
 cbar = fig.colorbar(
@@ -233,7 +228,7 @@ cbar = fig.colorbar(
 )
 cbar.set_ticks(np.linspace(0, 1, len(dist_threshes)))
 cbar.set_ticklabels([f"{d:.1f}" for d in dist_threshes])
-cbar.set_label("$R_{i,j} < d / [pkpc]$")
+cbar.set_label("$d / [pkpc]$")
 
 # Save the figure
 savefig(fig, args.output_file)
