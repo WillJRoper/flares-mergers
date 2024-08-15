@@ -60,6 +60,13 @@ with h5py.File(args.master_file, "r") as hdf:
             # Get the positions and convert to physical units
             pos = to_physical(gal_grp["COP"][:].T, z)
 
+            # Get the masses
+            mass = gal_grp["Mstar_aperture/30"][:] * 10**10
+
+            # Filter for galaxies with mass > 10^8 Msun
+            mask = mass > 10**8
+            pos = pos[mask]
+
             # Create a KDTree
             tree = cKDTree(pos)
 
