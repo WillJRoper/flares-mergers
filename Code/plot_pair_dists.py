@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 from unyt import kpc, Mpc
-from scipy.spatial import cKDTree
 
-from utils import savefig, to_physical, unpack_progenitors, PROG_SNAPS
+from utils import savefig, unpack_progenitors, SNAPSHOTS, REGIONS
+from get_merger_info import make_pairs
 
 
 # Define the inputs
@@ -48,119 +48,17 @@ start_inds, nprogs = unpack_progenitors(args.master_file)
 
 # Loop over regions and snapshots calculating the pair distances
 pair_dists = {}
-with h5py.File(args.master_file, "r") as hdf:
-    for reg in tqdm(hdf.keys(), desc="Regions"):
-        for snap in PROG_SNAPS:
-            # Get the prog snap
-            prog_snap = PROG_SNAPS[snap]
+merger_dists = {}
+for reg in tqdm(REGIONS, desc="Regions"):
+    for snap in SNAPSHOTS[:-1]:
+        # Get the galaxy pairs
+        galaxy_pairs = make_pairs(args.master_file, reg, snap, d=dist)
 
-            # Create an entry for the snapshot
-            pair_dists.setdefault(prog_snap, [])
-
-            # Extract the redshift
-            z = float(snap.split("z")[-1].replace("p", "."))
-
-            # Get the galaxy group
-            gal_grp = hdf[f"{reg}/{prog_snap}/Galaxy"]
-
-            # Get the positions and convert to physical units
-            pos = to_physical(gal_grp["COP"][:].T, z)
-
-            # Get the masses
-            mass = gal_grp["Mstar_aperture/30"][:] * 10**10
-
-            # Filter for galaxies with mass > 10^8 Msun
-            mask = mass > 10**8
-            pos = pos[mask]
-
-            # Create a KDTree
-            tree = cKDTree(pos)
-
-            # Query the tree
-            pairs = tree.query_pairs(dist, output_type="set")
-
-            # Calculate the distances
-            dists = (
-                np.array([np.linalg.norm(pos[i] - pos[j]) for i, j in pairs])
-                * 1000
-            )
-
-            # Store the distances
-            pair_dists[prog_snap].extend(dists)
-
-# Loop over regions and snapshots calculating the distances between progenitors
-prog_pair_dists = {}
-with h5py.File(args.master_file, "r") as hdf:
-    for reg in hdf.keys():
-        for snap in hdf[reg].keys():
-            # Can't do the first snapshot since there are no progenitors
-            if snap not in PROG_SNAPS:
-                continue
-
-            # Get the prog snap
-            prog_snap = PROG_SNAPS[snap]
-
-            # Get this snapshots progenitor data
-            this_start_inds = np.array(start_inds[reg][snap], dtype=int)
-            this_nprogs = np.array(nprogs[reg][snap], dtype=int)
-
-            # Create an entry for the snapshot
-            prog_pair_dists.setdefault(prog_snap, [])
-
-            # Extract the redshift
-            z = float(prog_snap.split("z")[-1].replace("p", "."))
-
-            # Get the galaxy group
-            gal_grp = hdf[f"{reg}/{prog_snap}/Galaxy"]
-
-            # Get the positions and convert to physical units
-            pos = to_physical(gal_grp["COP"][:].T, z)
-
-            # Get the masses
-            mass = gal_grp["Mstar_aperture/30"][:] * 10**10
-
-            # Get the distances for the progenitors
-            dists = []
-            for i in tqdm(
-                range(len(this_start_inds)),
-                desc=f"Progenitors for {reg}:{snap}",
-            ):
-                inds = list(
-                    range(
-                        this_start_inds[i], this_start_inds[i] + this_nprogs[i]
-                    )
-                )
-
-                # Get the mass and positions for these progenitors
-                prog_mass = mass[inds]
-                prog_pos = pos[inds, :]
-
-                # Mask out progentiros below 10^8 Msun
-                mask = prog_mass > 10**8
-                prog_pos = prog_pos[mask]
-
-                if len(prog_mass[mask]) < 2:
-                    continue
-
-                # Create a KDTree
-                tree = cKDTree(prog_pos)
-
-                # Query the tree
-                pairs = tree.query_pairs(dist, output_type="set")
-
-                # Calculate the distances
-                prog_dists = (
-                    np.array(
-                        [
-                            np.linalg.norm(prog_pos[i] - prog_pos[j])
-                            for i, j in pairs
-                        ]
-                    )
-                    * 1000
-                )
-
-                # Store the distances
-                prog_pair_dists[prog_snap].extend(prog_dists)
+        # Extract the distances
+        for pair in galaxy_pairs:
+            pair_dists.setdefault(snap, []).append(pair.dist)
+            if pair.is_merger:
+                merger_dists.setdefault(snap, []).append(pair.dist)
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
@@ -208,7 +106,7 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
 
     # Plot the histogram for the progenitors
     prog_n, _, _ = ax1.hist(
-        prog_pair_dists[snap],
+        merger_dists[snap],
         bins=bins,
         histtype="step",
         color=colors[i],
