@@ -129,10 +129,13 @@ with h5py.File(new_file, "r+") as hdf_master:
                 # Get the progenitor and descendant pointers and numbers
                 prog_ptrs = hdf_mergergraph["Prog_Start_Index"][:]
                 n_progs = hdf_mergergraph["nProgs"][:]
+                desc_ptrs = hdf_mergergraph["Desc_Start_Index"][:]
+                n_descs = hdf_mergergraph["nDescs"][:]
 
                 # Make a nice look up table for the merger graph pointer and
                 # length
                 mergergraph_lookup = {}
+                mergergraph_lookup_desc = {}
                 for i, (grpID, subgrpID) in enumerate(
                     zip(mergergraph_grpIDs, mergergraph_subgrpIDs)
                 ):
@@ -140,13 +143,22 @@ with h5py.File(new_file, "r+") as hdf_master:
                         prog_ptrs[i],
                         n_progs[i],
                     )
+                    mergergraph_lookup_desc[(grpID, subgrpID)] = (
+                        desc_ptrs[i],
+                        n_descs[i],
+                    )
 
                 # Loop over galaxies in the master file getting the data
                 pointers = np.zeros(len(master_grpIDs), dtype=np.int32)
                 nprogs = np.zeros(len(master_grpIDs), dtype=np.int32)
+                desc_ptrs = np.zeros(len(master_grpIDs), dtype=np.int32)
+                ndescs = np.zeros(len(master_grpIDs), dtype=np.int32)
                 prog_star_ms = []
                 prog_grps = []
                 prog_subgrps = []
+                desc_star_ms = []
+                desc_grps = []
+                desc_subgrps = []
                 for ind, (grp, subgrp) in enumerate(
                     zip(master_grpIDs, master_subgrpIDs)
                 ):
@@ -158,6 +170,9 @@ with h5py.File(new_file, "r+") as hdf_master:
 
                     # Get the mergergraph pointer and length
                     prog_start_index, nprog = mergergraph_lookup[(grp, subgrp)]
+                    desc_start_index, ndesc = mergergraph_lookup_desc[
+                        (grp, subgrp)
+                    ]
 
                     # Get the progenitor masses
                     try:
@@ -170,6 +185,15 @@ with h5py.File(new_file, "r+") as hdf_master:
                         prog_subgrp = hdf_mergergraph["prog_subgroup_ids"][
                             prog_start_index : prog_start_index + nprog
                         ]
+                        desc_masses = hdf_mergergraph["desc_stellar_masses"][
+                            desc_start_index : desc_start_index + ndesc
+                        ]
+                        desc_grp = hdf_mergergraph["desc_group_ids"][
+                            desc_start_index : desc_start_index + ndesc
+                        ]
+                        desc_subgrp = hdf_mergergraph["desc_subgroup_ids"][
+                            desc_start_index : desc_start_index + ndesc
+                        ]
                     except KeyError:
                         continue
 
@@ -178,6 +202,10 @@ with h5py.File(new_file, "r+") as hdf_master:
                     prog_masses = prog_masses[okinds]
                     prog_grp = prog_grp[okinds]
                     prog_subgrp = prog_subgrp[okinds]
+                    okinds = desc_masses > 1e8 / 10**10
+                    desc_masses = desc_masses[okinds]
+                    desc_grp = desc_grp[okinds]
+                    desc_subgrp = desc_subgrp[okinds]
 
                     # Sort by stellar mass (they're sorted by DM mass in the
                     # MEGA file)
@@ -185,13 +213,22 @@ with h5py.File(new_file, "r+") as hdf_master:
                     prog_masses = prog_masses[sinds[::-1]]
                     prog_grp = prog_grp[sinds[::-1]]
                     prog_subgrp = prog_subgrp[sinds[::-1]]
+                    sinds = np.sort(desc_masses)
+                    desc_masses = desc_masses[sinds[::-1]]
+                    desc_grp = desc_grp[sinds[::-1]]
+                    desc_subgrp = desc_subgrp[sinds[::-1]]
 
                     # Store this data
                     nprogs[ind] = prog_masses.size
                     pointers[ind] = len(prog_star_ms)
+                    ndescs[ind] = desc_masses.size
+                    desc_ptrs[ind] = len(desc_star_ms)
                     prog_star_ms.extend(prog_masses)
+                    desc_star_ms.extend(desc_masses)
                     prog_grps.extend(prog_grp)
                     prog_subgrps.extend(prog_subgrp)
+                    desc_grps.extend(desc_grp)
+                    desc_subgrps.extend(desc_subgrp)
 
                 # Add the data to the master file under a new group
                 gal_grp.create_group("MergerGraph")
@@ -207,6 +244,19 @@ with h5py.File(new_file, "r+") as hdf_master:
                 )
                 gal_grp["MergerGraph"].create_dataset(
                     "prog_subgroup_ids", data=np.array(prog_subgrps)
+                )
+                gal_grp["MergerGraph"].create_dataset(
+                    "Desc_Start_Index", data=desc_ptrs
+                )
+                gal_grp["MergerGraph"].create_dataset("nDescs", data=ndescs)
+                gal_grp["MergerGraph"].create_dataset(
+                    "desc_stellar_masses", data=np.array(desc_star_ms)
+                )
+                gal_grp["MergerGraph"].create_dataset(
+                    "desc_group_ids", data=np.array(desc_grps)
+                )
+                gal_grp["MergerGraph"].create_dataset(
+                    "desc_subgroup_ids", data=np.array(desc_subgrps)
                 )
 
 
