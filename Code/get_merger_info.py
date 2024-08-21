@@ -24,7 +24,8 @@ def make_pairs(filepath, reg, snap, d=0.050):
         gal_group = hdf[reg][snap]["Galaxy"]
 
         # Get the merger group
-        merger_group = gal_group["MergerGraph"]
+        if "MergerGraph" in gal_group:
+            merger_group = gal_group["MergerGraph"]
 
         # Get the galaxy centred of potentials
         gal_pos = to_physical(
@@ -39,10 +40,16 @@ def make_pairs(filepath, reg, snap, d=0.050):
         masses = gal_group["Mstar_aperture/30"][:] * 10**10
 
         # Get the merger data
-        desc_groups = merger_group["desc_group_ids"][:]
-        desc_subgroups = merger_group["desc_subgroup_ids"][:]
-        desc_pointers = merger_group["Desc_start_index"][:]
-        ndescs = merger_group["nDesc"][:]
+        if "MergerGraph" in gal_group:
+            desc_groups = merger_group["desc_group_ids"][:]
+            desc_subgroups = merger_group["desc_subgroup_ids"][:]
+            desc_pointers = merger_group["Desc_start_index"][:]
+            ndescs = merger_group["nDesc"][:]
+        else:
+            desc_groups = np.zeros(0)
+            desc_subgroups = np.zeros(0)
+            desc_pointers = np.zeros(0)
+            ndescs = np.zeros(0)
 
     # Filter for "resolved" galaxies
     mask = masses > 10**8
@@ -80,7 +87,12 @@ def make_pairs(filepath, reg, snap, d=0.050):
         desc_ids_j = set(zip(desc_grps_j, desc_subgrps_j))
 
         # Do they share a common descendent?
-        is_merger = bool(desc_ids_i & desc_ids_j)
+        if len(desc_ids_i) == 0 or len(desc_ids_j) == 0:
+            is_merger = False
+        elif len(desc_ids_i) > 0 and len(desc_ids_j) > 0:
+            is_merger = bool(desc_ids_i & desc_ids_j)
+        else:
+            is_merger = False
 
         pair_objs.append(
             GalaxyPair(
