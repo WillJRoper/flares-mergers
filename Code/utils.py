@@ -24,6 +24,8 @@ PROG_SNAPS = {
     snap: prog_snap for snap, prog_snap in zip(SNAPSHOTS[1:], SNAPSHOTS[:-1])
 }
 
+REGIONS = [str(i).zfill(2) for i in range(0, 40)]
+
 
 def savefig(fig, outname):
     """
