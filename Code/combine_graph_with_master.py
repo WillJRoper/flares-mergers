@@ -145,6 +145,8 @@ with h5py.File(new_file, "r+") as hdf_master:
                 pointers = np.zeros(len(master_grpIDs), dtype=np.int32)
                 nprogs = np.zeros(len(master_grpIDs), dtype=np.int32)
                 prog_star_ms = []
+                prog_grps = []
+                prog_subgrps = []
                 for ind, (grp, subgrp) in enumerate(
                     zip(master_grpIDs, master_subgrpIDs)
                 ):
@@ -162,6 +164,12 @@ with h5py.File(new_file, "r+") as hdf_master:
                         prog_masses = hdf_mergergraph["prog_stellar_masses"][
                             prog_start_index : prog_start_index + nprog
                         ]
+                        prog_grp = hdf_mergergraph["prog_group_ids"][
+                            prog_start_index : prog_start_index + nprog
+                        ]
+                        prog_subgrp = hdf_mergergraph["prog_subgroup_ids"][
+                            prog_start_index : prog_start_index + nprog
+                        ]
                     except KeyError:
                         continue
 
@@ -176,6 +184,8 @@ with h5py.File(new_file, "r+") as hdf_master:
                     nprogs[ind] = prog_masses.size
                     pointers[ind] = len(prog_star_ms)
                     prog_star_ms.extend(prog_masses)
+                    prog_grps.extend(prog_grp)
+                    prog_subgrps.extend(prog_subgrp)
 
                 # Add the data to the master file under a new group
                 gal_grp.create_group("MergerGraph")
@@ -185,6 +195,12 @@ with h5py.File(new_file, "r+") as hdf_master:
                 gal_grp["MergerGraph"].create_dataset("nProgs", data=nprogs)
                 gal_grp["MergerGraph"].create_dataset(
                     "prog_stellar_masses", data=np.array(prog_star_ms)
+                )
+                gal_grp["MergerGraph"].create_dataset(
+                    "prog_group_ids", data=np.array(prog_grps)
+                )
+                gal_grp["MergerGraph"].create_dataset(
+                    "prog_subgroup_ids", data=np.array(prog_subgrps)
                 )
 
 
