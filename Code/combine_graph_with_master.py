@@ -209,14 +209,16 @@ with h5py.File(new_file, "r+") as hdf_master:
 
                     # Sort by stellar mass (they're sorted by DM mass in the
                     # MEGA file)
-                    sinds = np.sort(prog_masses)
-                    prog_masses = prog_masses[sinds[::-1]]
-                    prog_grp = prog_grp[sinds[::-1]]
-                    prog_subgrp = prog_subgrp[sinds[::-1]]
-                    sinds = np.sort(desc_masses)
-                    desc_masses = desc_masses[sinds[::-1]]
-                    desc_grp = desc_grp[sinds[::-1]]
-                    desc_subgrp = desc_subgrp[sinds[::-1]]
+                    if len(prog_masses) > 0:
+                        sinds = np.sort(prog_masses)
+                        prog_masses = prog_masses[sinds[::-1]]
+                        prog_grp = prog_grp[sinds[::-1]]
+                        prog_subgrp = prog_subgrp[sinds[::-1]]
+                    if len(desc_masses) > 0:
+                        sinds = np.sort(desc_masses)
+                        desc_masses = desc_masses[sinds[::-1]]
+                        desc_grp = desc_grp[sinds[::-1]]
+                        desc_subgrp = desc_subgrp[sinds[::-1]]
 
                     # Store this data
                     nprogs[ind] = prog_masses.size
