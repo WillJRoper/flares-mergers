@@ -55,11 +55,15 @@ for reg in tqdm(REGIONS, desc="Regions"):
         # Get the galaxy pairs
         galaxy_pairs = make_pairs(args.master_file, reg, snap, d=dist)
 
+        # Prepare dicts
+        pair_dists.setdefault(snap, [])
+        merger_dists.setdefault(snap, [])
+
         # Extract the distances
         for pair in galaxy_pairs:
-            pair_dists.setdefault(snap, []).append(pair.dist)
+            pair_dists[snap].append(pair.dist)
             if pair.is_merger:
-                merger_dists.setdefault(snap, []).append(pair.dist)
+                merger_dists[snap].append(pair.dist)
 
 
 # Plot the histogram for each snapshot in two panels (one above the other)
