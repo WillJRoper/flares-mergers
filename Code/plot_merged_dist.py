@@ -8,7 +8,7 @@ from tqdm import tqdm
 from unyt import kpc, Mpc
 from scipy.spatial import cKDTree
 
-from utils import savefig, to_physical, unpack_progenitors, PROG_SNAPS
+from utils import savefig, to_physical, unpack_progenitors, REGIONS, SNAPSHOTS
 
 
 # Define the inputs
