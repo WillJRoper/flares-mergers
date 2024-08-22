@@ -134,7 +134,7 @@ cbar = fig.colorbar(
     cax=cax,
 )
 cbar.set_ticks(np.linspace(0, 1, len(dist_threshes)))
-cbar.set_ticklabels([f"{d:.1f}" for d in dist_threshes])
+cbar.set_ticklabels([f"{d * 1000:.1f}" for d in dist_threshes])
 cbar.set_label("$d / [pkpc]$")
 
 # Save the figure
