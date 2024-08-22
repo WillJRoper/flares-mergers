@@ -9,6 +9,7 @@ from unyt import kpc, Mpc
 from scipy.spatial import cKDTree
 
 from utils import savefig, to_physical, unpack_progenitors, REGIONS, SNAPSHOTS
+from get_merger_info import make_pairs
 
 
 # Define the inputs
