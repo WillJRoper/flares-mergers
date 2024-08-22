@@ -43,9 +43,6 @@ args = parser.parse_args()
 # Include units on the distance and convert to Mpc
 dist = (args.dist * kpc).to(Mpc).value
 
-# Get progenitor information
-start_inds, nprogs = unpack_progenitors(args.master_file)
-
 # Loop over regions and snapshots calculating the pair distances
 pair_dists = {}
 merger_dists = {}

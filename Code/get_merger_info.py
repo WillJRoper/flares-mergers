@@ -40,7 +40,7 @@ def make_pairs(filepath, reg, snap, d=0.050):
         masses = gal_group["Mstar_aperture/30"][:] * 10**10
 
         # Get the merger data
-        if "MergerGraph" in gal_group:
+        if "MergerGraph" in gal_group and "Desc_start_index" in merger_group:
             desc_groups = merger_group["desc_group_ids"][:]
             desc_subgroups = merger_group["desc_subgroup_ids"][:]
             desc_pointers = merger_group["Desc_start_index"][:]
