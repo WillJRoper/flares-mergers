@@ -213,6 +213,5 @@ cbar = fig.colorbar(
 )
 cbar.ax.set_yticklabels([f"{z:.0f}" for z in zs])
 cbar.set_label("$z$")
-cbar.ax.invert_yaxis()
 
 savefig(fig, f"{args.output_file}_all")
