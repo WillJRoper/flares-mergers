@@ -142,7 +142,7 @@ cbar.set_label("$d / [pkpc]$")
 savefig(fig, args.output_file)
 
 # Define some continuous distance bins
-bins = np.logspace(-4, 2, 50)
+bins = np.logspace(-4, 2, args.nbins)
 bin_centers = (bins[:-1] + bins[1:]) / 2
 
 # Loop over snapshots and plot the probability of merging at distance
