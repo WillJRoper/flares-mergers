@@ -164,10 +164,55 @@ for snap in SNAPSHOTS[:-1]:
     ax.plot(
         bin_centers,
         frac_merged,
-        label="Mergers",
     )
     ax.set_xscale("log")
     ax.set_xlabel("$R_{i,j} / $[kpc]")
     ax.set_ylabel("Fraction of mergers")
-    ax.legend()
     savefig(fig, f"{args.output_file}_{snap}")
+
+# Also make the same plot as above but plotting each redshift on the same
+# plot with a colormap
+
+# Create a colormap for each redshift
+zs = np.arange(5, 16, 1)
+colors = plt.cm.viridis(np.linspace(0, 1, len(zs)))
+
+# Create the figure
+fig, ax = plt.subplots(figsize=(3.5, 3.5))
+ax.grid(True)
+ax.set_axisbelow(True)
+
+# Loop over snapshots and plot the probability of merging at distance
+for i, snap in enumerate(SNAPSHOTS[:-1]):
+    # Get the distances
+    dists = np.array(pair_dists[snap]) * 1000
+
+    # Get the number of mergers at each distance
+    n_merged, _ = np.histogram(np.array(merger_dists[snap]) * 1000, bins=bins)
+    n_all, _ = np.histogram(dists, bins=bins)
+
+    # Get the fraction of mergers at each distance
+    frac_merged = n_merged / n_all
+
+    # Plot the fraction of mergers at each distance
+    ax.plot(
+        bin_centers,
+        frac_merged,
+        color=colors[i],
+    )
+
+ax.set_xscale("log")
+ax.set_xlabel("$R_{i,j} / $[kpc]")
+ax.set_ylabel("Fraction of mergers")
+
+# Create the colorbar for the redshifts
+cbar = fig.colorbar(
+    plt.cm.ScalarMappable(cmap="viridis"),
+    cax=cax,
+    ticks=np.linspace(0, 1, len(zs)),
+)
+cbar.ax.set_yticklabels(reversed([f"{z:.0f}" for z in zs]))
+cbar.set_label("$z$")
+cbar.ax.invert_yaxis()
+
+savefig(fig, f"{args.output_file}_all")
