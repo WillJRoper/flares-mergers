@@ -158,14 +158,15 @@ for snap in SNAPSHOTS[:-1]:
     frac_merged = n_merged / n_all
 
     # Plot the fraction of mergers at each distance
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(3.5, 3.5))
+    ax.gird(True)
+    ax.set_axisbelow(True)
     ax.plot(
         bin_centers,
         frac_merged,
         label="Mergers",
     )
     ax.set_xscale("log")
-    ax.set_yscale("log")
     ax.set_xlabel("$R_{i,j} / $[kpc]")
     ax.set_ylabel("Fraction of mergers")
     ax.legend()
