@@ -142,7 +142,7 @@ cbar.set_label("$d / [pkpc]$")
 savefig(fig, args.output_file)
 
 # Define some continuous distance bins
-bins = np.logspace(-2, 2, 100)
+bins = np.logspace(-4, 2, 50)
 bin_centers = (bins[:-1] + bins[1:]) / 2
 
 # Loop over snapshots and plot the probability of merging at distance
@@ -166,7 +166,7 @@ for snap in SNAPSHOTS[:-1]:
     )
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.set_xlabel("$R_{i,j} / [kpc]")
+    ax.set_xlabel("$R_{i,j} / $[kpc]")
     ax.set_ylabel("Fraction of mergers")
     ax.legend()
     savefig(fig, f"{args.output_file}_{snap}")
