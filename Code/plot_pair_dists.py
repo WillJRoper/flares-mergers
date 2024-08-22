@@ -102,12 +102,13 @@ for i, snap in enumerate(sorted(pair_dists.keys())):
     )
 
     # Plot the histogram for the progenitors
-    prog_n, _, _ = ax1.hist(
-        merger_dists[snap],
-        bins=bins,
-        histtype="step",
-        color=colors[i],
-    )
+    if snap in merger_dists:
+        prog_n, _, _ = ax1.hist(
+            merger_dists[snap],
+            bins=bins,
+            histtype="step",
+            color=colors[i],
+        )
 
 # Put a text box in the top left corner
 ax.text(
