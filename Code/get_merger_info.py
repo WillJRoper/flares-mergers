@@ -44,7 +44,7 @@ def make_pairs(filepath, reg, snap, d=0.050):
             desc_groups = merger_group["desc_group_ids"][:]
             desc_subgroups = merger_group["desc_subgroup_ids"][:]
             desc_pointers = merger_group["Desc_Start_Index"][:]
-            ndescs = merger_group["nDesc"][:]
+            ndescs = merger_group["nDescs"][:]
         else:
             desc_groups = np.zeros(0)
             desc_subgroups = np.zeros(0)
