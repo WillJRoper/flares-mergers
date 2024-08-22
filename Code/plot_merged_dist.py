@@ -159,7 +159,7 @@ for snap in SNAPSHOTS[:-1]:
 
     # Plot the fraction of mergers at each distance
     fig, ax = plt.subplots(figsize=(3.5, 3.5))
-    ax.gird(True)
+    ax.grid(True)
     ax.set_axisbelow(True)
     ax.plot(
         bin_centers,
