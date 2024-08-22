@@ -48,8 +48,8 @@ def make_pairs(filepath, reg, snap, d=0.050):
         else:
             desc_groups = np.zeros(0)
             desc_subgroups = np.zeros(0)
-            desc_pointers = np.zeros(0)
-            ndescs = np.zeros(0)
+            desc_pointers = np.zeros(len(masses))
+            ndescs = np.zeros(len(masses))
 
     # Filter for "resolved" galaxies
     mask = masses > 10**8
