@@ -44,16 +44,17 @@ args = parser.parse_args()
 # Include units on the distance and convert to Mpc
 dist = (args.dist * kpc).to(Mpc).value
 
-# Include units on the distance and convert to Mpc
-dist = (args.dist * kpc).to(Mpc).value
-
 # Loop over regions and snapshots calculating the pair distances
 pair_dists = {}
 merger_dists = {}
+galaxy_pair_dict = {}
 for reg in tqdm(REGIONS, desc="Regions"):
     for snap in SNAPSHOTS[:-1]:
         # Get the galaxy pairs
         galaxy_pairs = make_pairs(args.master_file, reg, snap, d=dist)
+
+        # Store the galaxy pairs
+        galaxy_pair_dict.setdefault(snap, galaxy_pairs)
 
         # Prepare dicts
         pair_dists.setdefault(snap, [])
@@ -139,3 +140,33 @@ cbar.set_label("$d / [pkpc]$")
 
 # Save the figure
 savefig(fig, args.output_file)
+
+# Define some continuous distance bins
+bins = np.logspace(-2, 2, 100)
+bin_centers = (bins[:-1] + bins[1:]) / 2
+
+# Loop over snapshots and plot the probability of merging at distance
+for snap in SNAPSHOTS[:-1]:
+    # Get the distances
+    dists = np.array(pair_dists[snap]) * 1000
+
+    # Get the number of mergers at each distance
+    n_merged, _ = np.histogram(np.array(merger_dists[snap]) * 1000, bins=bins)
+    n_all, _ = np.histogram(dists, bins=bins)
+
+    # Get the fraction of mergers at each distance
+    frac_merged = n_merged / n_all
+
+    # Plot the fraction of mergers at each distance
+    fig, ax = plt.subplots()
+    ax.plot(
+        bin_centers,
+        frac_merged,
+        label="Mergers",
+    )
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel("$R_{i,j} / [kpc]")
+    ax.set_ylabel("Fraction of mergers")
+    ax.legend()
+    savefig(fig, f"{args.output_file}_{snap}")
