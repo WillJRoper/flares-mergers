@@ -79,7 +79,7 @@ ax.grid(True)
 ax.set_axisbelow(True)
 
 # Define distance thresholds
-dist_threshes = [1, 5, 10, 50, 100]
+dist_threshes = np.array([1, 5, 10, 50, 100]) / 1000  # Mpc
 
 # Define the colors
 colors = plt.cm.viridis(np.linspace(0, 1, len(dist_threshes)))
