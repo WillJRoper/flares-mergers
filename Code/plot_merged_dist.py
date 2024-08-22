@@ -208,7 +208,7 @@ ax.set_ylabel("Fraction of mergers")
 # Create the colorbar for the redshifts
 cbar = fig.colorbar(
     plt.cm.ScalarMappable(cmap="viridis"),
-    cax=cax,
+    ax=ax,
     ticks=np.linspace(0, 1, len(zs)),
 )
 cbar.ax.set_yticklabels(reversed([f"{z:.0f}" for z in zs]))
